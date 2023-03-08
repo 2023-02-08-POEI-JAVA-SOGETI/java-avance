@@ -50,7 +50,7 @@ public class ArticleDao {
 				articles.add(article);
 			}
 		} catch (Exception e) {
-			LOGGER.error("Erreur lors de l'enregistrement du driver.", e);
+			LOGGER.error("Erreur lors de l'exécution de la requête", e);
 		}
 		return articles;
 	}
