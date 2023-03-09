@@ -13,13 +13,13 @@ import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
-@WebServlet(name = "Articles", displayName = "La servlet des articles", urlPatterns = "/articles", loadOnStartup = 1)
-public class ListeArticlesServlet extends HttpServlet {
+@WebServlet(name = "Panier", displayName = "La servlet du panier", urlPatterns = "/panier", loadOnStartup = 1)
+public class PanierServlet extends HttpServlet {
 
 	private static final long serialVersionUID = 1L;
 
 	/** Création d'un nouvel attribut statique qui nous sert à logger */
-	private static final Logger LOGGER = LoggerFactory.getLogger(ListeArticlesServlet.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(PanierServlet.class);
 
 	private ArticleDao articleDao = new ArticleDao();
 
@@ -36,21 +36,32 @@ public class ListeArticlesServlet extends HttpServlet {
 		// Récupération des articles avec le DAO (Data Access Object)
 		List<Article> articles = articleDao.getAllArticles();
 
+		//Récupération du panier
+		Panier panier = (Panier) request.getSession().getAttribute("panier");
+		if(panier == null) {
+			panier = new Panier();
+			request.getSession().setAttribute("panier", panier);
+		}
+		
+		
+		//Création de la liste des articles du panier
 		// Récupération de out : il nous permettra d'écrire dans la réponse
 		try (PrintWriter out = response.getWriter()) {
 			out.println("<html>"
-					+ "<head><title>Page des articles</title></head>");
+					+ "<head><title>Page des articles dans le panier</title></head>");
 			out.println("<body  bgcolor=\"#ffffff\">");
 
 			// SI articles n'est pas vide, on crée un tableau HTML
-			if (!articles.isEmpty()) {
-				LOGGER.debug("Des articles ont été trouvés, un tableau doit être construit en HTML.");
+			if (!panier.getIds().isEmpty()) {
+				LOGGER.debug("Le panier n'est pas vide, un tableau doit être construit en HTML.");
 
-				out.println("<p>Voici les articles trouvés : </p>");
+				out.println("<p>Voici le contenu du panier: </p>");
 				out.println("<table>");
-				out.println("<tr><th>Id</th><th>Nom</th><th>Prix</th></tr>");
+				out.println("<tr><th>Id</th><th>Nom</th><th>Prix</th><th>Quantité</th></tr>");
 				// Pour chaque article, on crée une ligne dans le tableau HTML
-				for (Article article : articles) {
+				for (Integer articleId : panier.getIds().keySet()) {
+					
+					Article article = getArticleById(articles, articleId);
 					out.println("<tr>"
 							+ "<td>"
 							+ article.getId()
@@ -62,7 +73,10 @@ public class ListeArticlesServlet extends HttpServlet {
 							+ article.getCategorie()
 							+ "</td>"
 							+ "<td>"
-							+ "<a href='./ajout-panier?id=" + article.getId() + " '>ajouter</a>"
+							+ panier.getIds().get(articleId)
+							+ "</td>"
+							+ "<td>"
+							+ "<a href='./suppression-panier?id=" + article.getId() + " '>supprimer</a>"
 							+ "</td>"
 							+ "</tr>");
 				}
@@ -70,13 +84,22 @@ public class ListeArticlesServlet extends HttpServlet {
 				out.println("</table>");
 
 			} else {
-				out.println("<p>Désolé, aucun article trouvé</p>");
+				out.println("<p>Désolé, aucun article dans le panier</p>");
 			}
 
 			// Fermeture des balises
 			out.println("</body></html>");
 		}
 		LOGGER.info("Fin de la méthode doGet.");
+	}
+
+	private Article getArticleById(List<Article> articles, Integer articleId) {
+		for(Article article : articles) {
+			if(article.getId().equals(articleId)) {
+				return article;
+			}
+		}
+		return null;
 	}
 
 }

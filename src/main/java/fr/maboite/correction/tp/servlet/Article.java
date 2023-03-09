@@ -2,9 +2,19 @@ package fr.maboite.correction.tp.servlet;
 
 public class Article {
 	
-	private Integer id;
+	private Integer id = Integer.valueOf(4);
+
 	private String nom;
-	private String categorie;
+	private String categorie = "défaut";
+	
+	public Article() {
+	}
+
+	public Article(Article other) {
+		this.id = other.id;
+		this.nom = other.nom;
+		this.categorie = other.categorie;
+	}
 
 	public Integer getId() {
 		return id;
