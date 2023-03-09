@@ -28,6 +28,7 @@ public class ArticleDao {
 		connectionProps.put("password", "admin");
 
 		try {
+			// On enregistre le driver (en l'occurence celui de MySQL) dans JDBC
 			DriverManager.registerDriver(new Driver());
 		} catch (SQLException e) {
 			LOGGER.error("Erreur lors de l'enregistrement du driver.", e);
@@ -37,10 +38,10 @@ public class ArticleDao {
 
 		try (Connection connection = DriverManager.getConnection(
 				"jdbc:mysql://localhost:3306/formation",
-				connectionProps); Statement stmt = connection.createStatement()) {
+				connectionProps); Statement stmt = connection.createStatement();
+				ResultSet rs = stmt.executeQuery("SELECT * FROM ARTICLE")) {
 
 			LOGGER.info("Exécution de la requête select");
-			ResultSet rs = stmt.executeQuery("SELECT * FROM ARTICLE");
 			while (rs.next()) {
 				LOGGER.debug("Un article a été trouvé en base");
 				Article article = new Article();
@@ -54,6 +55,7 @@ public class ArticleDao {
 		}
 		return articles;
 	}
+	
 
 	public List<Article> getArticlesBouchon() {
 		List<Article> articles = new ArrayList<>();

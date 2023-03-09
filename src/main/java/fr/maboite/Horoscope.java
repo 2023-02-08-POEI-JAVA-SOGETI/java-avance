@@ -27,10 +27,10 @@ public class Horoscope {
 
 	public void cleanHoroscope() {
 		if (this.horoscopes.size() == 7) {
-			// this.horoscopes.clear();
-			for (String sentenceString : this.horoscopes.values()) {
-				sentenceString = null;
-			}
+			this.horoscopes.clear();
+//			for (String sentenceString : this.horoscopes.values()) {
+//				sentenceString = null;
+//			}
 		}
 	}
 
