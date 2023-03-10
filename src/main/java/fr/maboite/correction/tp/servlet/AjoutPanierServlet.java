@@ -37,6 +37,7 @@ public class AjoutPanierServlet extends HttpServlet {
 		Panier panier = (Panier) request.getSession().getAttribute("panier");
 		if(panier == null) {
 			panier = new Panier();
+			request.getSession().setAttribute("panier", panier);
 		}
 		panier.ajouteArticle(id);
 		

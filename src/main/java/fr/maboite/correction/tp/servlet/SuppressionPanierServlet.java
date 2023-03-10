@@ -14,12 +14,12 @@ import jakarta.servlet.http.HttpServletResponse;
 
 @WebServlet(name = "suppression-panier", displayName = "La servlet de suppression du panier", 
 	urlPatterns = "/suppression-panier", loadOnStartup = 1)
-public class SuppressionPanier extends HttpServlet {
+public class SuppressionPanierServlet extends HttpServlet {
 
 	private static final long serialVersionUID = 1L;
 
 	/** Création d'un nouvel attribut statique qui nous sert à logger */
-	private static final Logger LOGGER = LoggerFactory.getLogger(SuppressionPanier.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(SuppressionPanierServlet.class);
 
 	@Override
 	public void doGet(HttpServletRequest request,
@@ -41,7 +41,6 @@ public class SuppressionPanier extends HttpServlet {
 		}
 		panier.supprimeArticle(id);
 		
-
 		try (PrintWriter out = response.getWriter()) {
 			out.println("L'élément avec l'id : " + id + " a été supprimé du panier.");
 		}
